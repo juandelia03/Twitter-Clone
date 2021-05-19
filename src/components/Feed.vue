@@ -10,7 +10,7 @@
         </g>
       </svg>
     </div>
-    <form class="tweet">
+    <form class="tweet" @submit.prevent="$emit('submited',text)">
       <div class="top">
         <img
           src="https://img.icons8.com/dusk/64/000000/user-female-circle.png"
@@ -18,23 +18,27 @@
           height="48px"
           class="profile"
         />
-        <input type="text" class="input-text" placeholder="What's happening?" />
+        <input v-model="text" type="text" class="input-text" placeholder="What's happening?" />
       </div>
       <div class="bottom">
-        <input class="tweet-btn" type="submit" value="Tweet" />
+        <input  class="tweet-btn" type="submit" value="Tweet" />
       </div>
     </form>
-  </div>
+    </div>
+  
 </template>
 
 <script>
+
 export default {
   name: "Feed",
   data() {
     return {
       img: "../assets/foto.png",
+      
     };
   },
+  
 };
 </script>
 
@@ -49,6 +53,7 @@ export default {
   justify-content: flex-start;
   flex-wrap: wrap;
   flex-grow: 1;
+ width: 600px;
 }
 .inicio {
   display: flex;
