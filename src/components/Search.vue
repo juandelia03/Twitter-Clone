@@ -43,7 +43,7 @@
           alt=""
           draggable="true"
           src="https://pbs.twimg.com/semantic_core_img/1393239376751054848/CYYYum6v?format=jpg&name=240x240"
-          class="img"
+          class="img2"
           width="68 "
           height="68"
         />
@@ -95,7 +95,7 @@ input {
   border-top: solid;
   border-color: lightgray;
   border-width: 1px;
-
+  max-height: 160px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -139,6 +139,16 @@ input {
   border-radius: 25px;
   align-self: flex-end;
   justify-self: flex-start;
+  position:relative;
+  bottom:60px;
+}
+.img2 {
+  display: flex;
+  border-radius: 25px;
+  align-self: flex-end;
+  justify-self: flex-start;
+  position:relative;
+  bottom:0px;
 }
 
 @media screen and (max-width: 960px) {

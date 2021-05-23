@@ -10,13 +10,21 @@
     <Sidebar />
     <div class="feed">
     <Feed class="tweet-form" @submited="newTweet"/>
-    <Tweet class="tweets-feed" v-bind:user="username" v-bind:time="day" v-bind:text="mainText"/>
+    <div class="tweets">
+    <Tweet  @deltetwt="delet(index)" class="tweets-feed" v-for=" (tweet,index) in tweets" :key="tweet.idT"
+    :text="tweet.mainText"
+    :time="day"
+    :user="username"
+    /> 
+    </div>
     </div>
     <Search class="search" />
   </div>
 </template>
 
 <script>
+
+
 import Sidebar from "./components/Sidebar";
 import Feed from "./components/Feed";
 import Search from "./components/Search";
@@ -28,24 +36,43 @@ export default {
     return{
       mainText:"",
       day:"",
-      username:""
+      username:"",
+      tweets:[],
+
     }
     
   },
   methods:{
     newTweet(text){
-      this.mainText=text
+      if(text === ""){
+        return
+      }
+      else{
+              this.mainText=text
       var today = new Date
       var time = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+" "+today.getHours() + ":" + today.getMinutes() ;
       this.day = time
-      console.log(this.day)
+     
       if(this.username === ""){
-        this.username = "unknown User"
+        this.username = "Unknown User"
       }
-      console.log(this.username)
+      var idN = Math.floor(Math.random() * 100)
+      var id = idN.toString()
+      this.tweets.unshift({mainText:text,day:time,username:"unknown",idT:id})
+      }
+
+      
+      },
+      delet(index){
+        console.log(this.tweets[index])
+        this.tweets.splice(this.tweets[index],1)
+       
+      }
+
+
     }
   }
-};
+
 </script>
 
 <style>
@@ -62,9 +89,25 @@ export default {
 
 .tweet-form{
   background: white;
+  margin-bottom: 10px;
+  width: 600px;
 }
 .tweets-feed{
-  margin-top: 10px;
+
   background-color:white ;
+}
+.feed{
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ebeef0;
+  background: #f7f9fa;
+}
+.tweets{
+  border-style: solid;
+  border-color: #ebeef0;
+  border-width: 1px;
+  border-right: 0px;
+  border-left: 0px;
+  border-bottom: 0px;
 }
 </style>
