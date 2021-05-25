@@ -6,7 +6,14 @@
     href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
     rel="stylesheet"
   />
-  <div class="container">
+  <div class="Login-page" v-if="email === ''" >
+    <LoginImg :style="{display:display2}"/>
+    <Login @logcard="logcard" :style="{display:display2}"/>
+    <LoginForm :style="{display:display}" @login="login"/>
+  </div>
+
+
+  <div v-else class="container" >
     <Sidebar />
     <div class="feed">
     <Feed class="tweet-form" @submited="newTweet"/>
@@ -20,25 +27,32 @@
     </div>
     <Search class="search" />
   </div>
+
 </template>
 
 <script>
 
-
 import Sidebar from "./components/Sidebar";
 import Feed from "./components/Feed";
 import Search from "./components/Search";
-import Tweet from "./components/Tweet"
+import Tweet from "./components/Tweet";
+import LoginImg from "./components/LoginImg"
+import Login from "./components/Login"
+import LoginForm from "./components/LoginForm"
+//import db from "./db "
 export default {
   name: "App",
-  components: { Sidebar, Feed, Search,Tweet },
+  components: { Sidebar, Feed, Search,Tweet,LoginImg,Login,LoginForm },
   data(){
     return{
       mainText:"",
       day:"",
       username:"",
       tweets:[],
-
+      email:"",
+      password:"",
+      display:"none",
+      display2:"flex",
     }
     
   },
@@ -64,13 +78,21 @@ export default {
       
       },
       delet(index){
-        console.log(this.tweets[index])
         this.tweets.splice(this.tweets[index],1)
        
+      },
+
+      logcard(){
+        if (this.display === "none") {
+          this.display = "flex"
+          this.display2 = "none"
+        }
+      },
+      login(){
+        console.log("login")
       }
 
-
-    }
+    },
   }
 
 </script>
@@ -109,5 +131,9 @@ export default {
   border-right: 0px;
   border-left: 0px;
   border-bottom: 0px;
+}
+.Login-page{
+  display: flex;
+  
 }
 </style>
