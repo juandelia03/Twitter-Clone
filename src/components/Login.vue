@@ -5,7 +5,7 @@
             <span class="main-text">Lo que está <br>
                 pasando ahora</span>
             <span class="subtext">Únete a Twitter hoy mismo.</span>
-            <button class="tweet-btn">Regístrate</button>
+            <button class="tweet-btn" @click="$emit('registercard')">Regístrate</button>
             <button class="tweet-btn2" @click="$emit('logcard')">Iniciar sesión</button>
         </div> 
     </div>

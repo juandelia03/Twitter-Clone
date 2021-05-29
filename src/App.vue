@@ -8,8 +8,9 @@
   />
   <div class="Login-page" v-if="email === ''" >
     <LoginImg :style="{display:display2}"/>
-    <Login @logcard="logcard" :style="{display:display2}"/>
+    <Login @registercard="registercard" @logcard="logcard" :style="{display:display2}"/>
     <LoginForm :style="{display:display}" @login="login"/>
+    <RegisterForm :style="{display:display3}" @register="register" />
   </div>
 
 
@@ -26,12 +27,15 @@
     </div>
     </div>
     <Search class="search" />
+    <div style="position:absolute;left:100px;bottom:100px;">
+      <p>{{this.username}}</p>
+    </div>
   </div>
 
 </template>
 
 <script>
-
+import firebase from "firebase"
 import Sidebar from "./components/Sidebar";
 import Feed from "./components/Feed";
 import Search from "./components/Search";
@@ -39,10 +43,11 @@ import Tweet from "./components/Tweet";
 import LoginImg from "./components/LoginImg"
 import Login from "./components/Login"
 import LoginForm from "./components/LoginForm"
-//import db from "./db "
+import RegisterForm from "./components/RegisterForm"
+import db from "./db"
 export default {
   name: "App",
-  components: { Sidebar, Feed, Search,Tweet,LoginImg,Login,LoginForm },
+  components: { Sidebar, Feed, Search,Tweet,LoginImg,Login,LoginForm,RegisterForm },
   data(){
     return{
       mainText:"",
@@ -53,6 +58,7 @@ export default {
       password:"",
       display:"none",
       display2:"flex",
+      display3:"none",
     }
     
   },
@@ -88,8 +94,45 @@ export default {
           this.display2 = "none"
         }
       },
-      login(){
-        console.log("login")
+      login(LoginData){
+        console.log(LoginData)
+        firebase.auth().signInWithEmailAndPassword(LoginData.email, LoginData.password)
+      .then((userCredential) => {
+      // Signed in
+      var user = userCredential.user;
+      this.display="none"
+      this.display2="flex"
+      this.email=LoginData.email
+      this.username=LoginData.email.replace("@gmail.com","")
+      // ...
+      })
+      .catch((error) => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      });
+      },
+      registercard(){
+        this.display2="none"
+        this.display3="flex"
+      },
+      register(Registerdata){
+        console.log(Registerdata.email)
+        //this.email = Registerdata.email
+        //this.username = Registerdata.user
+      firebase.auth().createUserWithEmailAndPassword(Registerdata.email, Registerdata.password)
+  .then((userCredential) => {
+    // Signed in
+    var user = userCredential.user;
+    this.display2="flex"
+    this.display3="none"
+    // ...
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ..    
+  });
+  
       }
 
     },

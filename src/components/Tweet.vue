@@ -2,7 +2,7 @@
     <div class="tweet">
         <img class="img" src="https://pbs.twimg.com/profile_images/1385287915056553987/WCU6ZqjH_400x400.jpg" alt="">
         <p class="user">{{user}}</p>
-        <p class="arroba">@juandelia03</p>
+        <p class="arroba">@{{user}}</p>
         <p class="time">{{time}}</p>
         
         <p class="text">{{text}}</p>
@@ -70,6 +70,7 @@ export default {
     padding-top: 10px;
     padding-left: 190px;
     color:#5b7183;
+    
 }
 .text{
     display: flex;
@@ -85,6 +86,7 @@ export default {
     font-size:15px;
     color: #5b7183;
     font-weight: 200px;
+    min-width: 100px;
 }
 .img{
     width: 48px;
