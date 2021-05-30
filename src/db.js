@@ -1,6 +1,8 @@
 import firebase from "firebase/app"
-import "firebase/firebase-database"
+import "firebase/firestore"
 import "firebase/auth"
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBcf2YD87DnCSdVeVGYMMrif9JV41Ah7Ec",
@@ -14,7 +16,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-var db = firebase.database()
+var db =firebase.database()
+console.log(firebase.database().ref("tweets/"))
 
 export{
     db,

@@ -19,10 +19,10 @@
     <div class="feed">
     <Feed class="tweet-form" @submited="newTweet"/>
     <div class="tweets">
-    <Tweet  @deltetwt="delet(index)" class="tweets-feed" v-for=" (tweet,index) in tweets" :key="tweet.idT"
+    <Tweet  @deltetwt="delet(index)" class="tweets-feed" v-for=" (tweet,index) in tweetsdb" :key="tweet.idT"
     :text="tweet.mainText"
-    :time="day"
-    :user="username"
+    :time="tweet.day"
+    :user="tweet.username"
     /> 
     </div>
     </div>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+var database = firebase.database()
+var postListRef = firebase.database().ref('tweets');
 import firebase from "firebase"
 import Sidebar from "./components/Sidebar";
 import Feed from "./components/Feed";
@@ -54,6 +56,7 @@ export default {
       day:"",
       username:"",
       tweets:[],
+      tweetsdb:[],
       email:"",
       password:"",
       display:"none",
@@ -64,28 +67,48 @@ export default {
   },
   methods:{
     newTweet(text){
+      //Check if there is any text to tweet
       if(text === ""){
         return
       }
+      //Asign each information of the tweet with corresponding data
       else{
-              this.mainText=text
+      this.mainText=text
       var today = new Date
       var time = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+" "+today.getHours() + ":" + today.getMinutes() ;
       this.day = time
-     
+     // If no user is given give a default
       if(this.username === ""){
         this.username = "Unknown User"
       }
       var idN = Math.floor(Math.random() * 100)
       var id = idN.toString()
-      this.tweets.unshift({mainText:text,day:time,username:"unknown",idT:id})
-      }
+      this.tweets.unshift({mainText:text,day:time,username:this.username,idT:id})
+      //Send Data to firebase
+      postListRef.push(this.tweets[0])
+      
+      this.tweetsdb=[]
+      var ref = firebase.database().ref("/tweets")
+      ref.once('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+      var childKey = childSnapshot.key;
+      var childData = childSnapshot.val();
+      this.tweetsdb.unshift({mainText:childData.mainText,day:childData.day,username:childData.username,idT:childData.idT})
+  
+  });
 
+});
+
+        
+    
+
+      }
+      
       
       },
       delet(index){
-        this.tweets.splice(this.tweets[index],1)
-       
+        this.tweetsdb.splice(this.tweets[index],1)
+        
       },
 
       logcard(){
@@ -95,8 +118,9 @@ export default {
         }
       },
       login(LoginData){
-        console.log(LoginData)
         firebase.auth().signInWithEmailAndPassword(LoginData.email, LoginData.password)
+        
+        
       .then((userCredential) => {
       // Signed in
       var user = userCredential.user;
@@ -104,19 +128,29 @@ export default {
       this.display2="flex"
       this.email=LoginData.email
       this.username=LoginData.email.replace("@gmail.com","")
+      //display the data in firebase
+      var ref = firebase.database().ref("/tweets")
+      ref.once('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+      var childKey = childSnapshot.key;
+      var childData = childSnapshot.val();
+      this.tweetsdb.unshift({mainText:childData.mainText,day:childData.day,username:childData.username,idT:childData.idT})
+  });
+
+});
       // ...
       })
       .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
       });
+      
       },
       registercard(){
         this.display2="none"
         this.display3="flex"
       },
       register(Registerdata){
-        console.log(Registerdata.email)
         //this.email = Registerdata.email
         //this.username = Registerdata.user
       firebase.auth().createUserWithEmailAndPassword(Registerdata.email, Registerdata.password)
@@ -132,7 +166,6 @@ export default {
     var errorMessage = error.message;
     // ..    
   });
-  
       }
 
     },
