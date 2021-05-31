@@ -1,6 +1,6 @@
 <template>
     <div class="tweet">
-        <img class="img" src="https://pbs.twimg.com/profile_images/1385287915056553987/WCU6ZqjH_400x400.jpg" alt="">
+        <img class="img" src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" alt="">
         <p class="user">{{user}}</p>
         <p class="arroba">@{{user}}</p>
         <p class="time">{{time}}</p>

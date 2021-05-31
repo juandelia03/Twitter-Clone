@@ -12,7 +12,7 @@
     </div>
     <form class="tweet" @submit.prevent="$emit('submited',text)" @submit="clear">
       <div class="top">
-      <img class="img" src="https://pbs.twimg.com/profile_images/1385287915056553987/WCU6ZqjH_400x400.jpg" alt="">
+      <img class="img" src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" alt="">
         <input v-model="text" type="text" class="input-text" placeholder="What's happening?" />
       </div>
       <div class="bottom">
