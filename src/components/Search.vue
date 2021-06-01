@@ -36,8 +36,9 @@
       <div class="item">
         <span class="subtitle">Covid-19 </span>
         <p class="content">
-          Expertos y autoridades de salud explican que barbijos caseros y medidas de distanciamiento
-          son efectivos frente a las variantes de COVID-19
+          Expertos y autoridades de salud explican que barbijos caseros y
+          medidas de distanciamiento son efectivos frente a las variantes de
+          COVID-19
         </p>
         <img
           alt=""
@@ -139,16 +140,16 @@ input {
   border-radius: 25px;
   align-self: flex-end;
   justify-self: flex-start;
-  position:relative;
-  bottom:60px;
+  position: relative;
+  bottom: 60px;
 }
 .img2 {
   display: flex;
   border-radius: 25px;
   align-self: flex-end;
   justify-self: flex-start;
-  position:relative;
-  bottom:0px;
+  position: relative;
+  bottom: 0px;
 }
 
 @media screen and (max-width: 960px) {

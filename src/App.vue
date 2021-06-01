@@ -23,6 +23,7 @@
       <Feed class="tweet-form" @submited="newTweet" />
       <div class="tweets">
         <Tweet
+          @liked="liked(index)"
           @deltetwt="delet(index)"
           class="tweets-feed"
           v-for="(tweet, index) in tweetsdb"
@@ -30,13 +31,11 @@
           :text="tweet.mainText"
           :time="tweet.day"
           :user="tweet.username"
+          :liked="tweet.likes"
         />
       </div>
     </div>
     <Search class="search" />
-    <div style="position:absolute;left:100px;bottom:100px;">
-      <p>{{ this.username }}</p>
-    </div>
   </div>
 </template>
 
@@ -77,10 +76,11 @@ export default {
       display: "none",
       display2: "flex",
       display3: "none",
+      likes: ["god"],
     };
   },
   methods: {
-    newTweet(text) {
+    newTweet(text, index) {
       //Check if there is any text to tweet
       if (text === "") {
         return;
@@ -111,6 +111,7 @@ export default {
           day: time,
           username: this.username,
           idT: id,
+          likes: this.likes,
         });
         //Send Data to firebase
         postListRef.push(this.tweets[0]);
@@ -126,6 +127,7 @@ export default {
               day: childData.day,
               username: childData.username,
               idT: childData.idT,
+              likes: childData.likes,
             });
           });
         });
@@ -178,6 +180,7 @@ export default {
                 day: childData.day,
                 username: childData.username,
                 idT: childData.idT,
+                likes: childData.likes,
               });
             });
           });
@@ -187,6 +190,33 @@ export default {
           var errorCode = error.code;
           var errorMessage = error.message;
         });
+    },
+    liked(index) {
+      var username = this.username;
+      //var value = this.tweetsdb[index].likes.includes(username);
+      //if (value === false) {
+      //  this.tweetsdb[index].likes.push(username);
+      //}
+      var keys = [];
+      var obj = []
+      var ref = firebase.database().ref("/tweets");
+      ref.once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          keys.unshift(childKey);
+          obj = Object.values(childData.likes)
+          console.log(obj)
+       });
+      if(obj.includes(username)){
+        return
+      }
+      else{        firebase
+          .database()
+          .ref("/tweets/" + keys[index] + "/likes")
+          .push(username);}
+
+      });
     },
     registercard() {
       this.display2 = "none";
