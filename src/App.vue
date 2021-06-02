@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     //Function to create Tweets
-    newTweet(text, index) {  
+    newTweet(text, index) {
       //Check if there is any text to tweet
       if (text === "") {
         return;
@@ -123,10 +123,12 @@ export default {
         this.tweetsdb = [];
         var ref = firebase.database().ref("/tweets"); //Refer to the directory in firebase
         ref.once("value", (snapshot) => {
-          snapshot.forEach((childSnapshot) => { //Get the key and data of each object in /tweets
+          snapshot.forEach((childSnapshot) => {
+            //Get the key and data of each object in /tweets
             var childKey = childSnapshot.key;
             var childData = childSnapshot.val();
-            this.tweetsdb.unshift({  //Append the data in the displayed tweets
+            this.tweetsdb.unshift({
+              //Append the data in the displayed tweets
               mainText: childData.mainText,
               day: childData.day,
               username: childData.username,
@@ -142,10 +144,11 @@ export default {
     //function to delete Tweets
     delet(index) {
       this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
-      var keys = [];   //Every Firebase Object Key will be stored in here
+      var keys = []; //Every Firebase Object Key will be stored in here
       var ref = firebase.database().ref("/tweets"); //Look in the /tweets route in firebase
       ref.once("value", (snapshot) => {
-        snapshot.forEach((childSnapshot) => { // Get the key and data of each object in /tweets
+        snapshot.forEach((childSnapshot) => {
+          // Get the key and data of each object in /tweets
           var childKey = childSnapshot.key;
           var childData = childSnapshot.val();
           keys.unshift(childKey); //Append each key in the keys array
@@ -153,11 +156,11 @@ export default {
         firebase
           .database()
           .ref("/tweets/" + keys[index]) //Look in the route twwets for the selected tweet by key,
-          .remove();           //the key is accesed by index in the keys array
+          .remove(); //the key is accesed by index in the keys array
       });
     },
     //Function to open the log screen when Login is clicked
-    logcard() { 
+    logcard() {
       if (this.display === "none") {
         this.display = "flex";
         this.display2 = "none";
@@ -168,13 +171,13 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(LoginData.email, LoginData.password) //Login with the LoginData emited
-                                                                        //from LoginForm.vue
+        //from LoginForm.vue
         .then((userCredential) => {
           // Signed in
           var user = userCredential.user;
           this.display = "none"; //get rid of the Login Page
           this.display2 = "flex"; //Acces the twitter page
-          this.email = LoginData.email;  
+          this.email = LoginData.email;
           this.username = LoginData.email.replace("@gmail.com", ""); //Defining the username using the email Data
           //display the data stored in firebase once logged in
           var ref = firebase.database().ref("/tweets");
@@ -201,12 +204,14 @@ export default {
     },
     //Likes system function
     liked(index) {
-      var username = this.username; 
+      var username = this.username;
       var keys = []; //Store the firebase key of every tweet
       var obj = []; //Storing every user who liked the tweet
       var length = []; //Amount of likes
-      var users = [];
+      var num = 0;
       var ref = firebase.database().ref("/tweets");
+      console.log(num);
+
       ref.once("value", (snapshot) => {
         snapshot.forEach((childSnapshot) => {
           var childKey = childSnapshot.key;
@@ -214,21 +219,56 @@ export default {
           keys.unshift(childKey); //Store every key in keys array
           obj = Object.values(childData.likes); //Storing every user who liked the tweet
           length = Object.keys(childData.likes).length; //Storing the amount of likes in each tweets
-          users = Object.values(childData.likes); 
+          num = childData.likesNum;
+          console.log(obj.length);
+
+          //usersKey.unshift(Object.keys)
         });
-        if (obj.includes(username)) { //checking if the loged user already liked the tweet
-          return;                      //If already liked then it must be disliked
-        } else { //If not liked then add a like
+        if (Object.values(obj).includes(username)) {
+          //checking if the loged user already liked the tweet
+          //If already liked then it must be disliked
+          if (obj.length >= 2) {
+            firebase
+              .database()
+              .ref("/tweets/" + keys[index] + "/likes")
+              .child(username)
+              .remove();
+
+            firebase
+              .database()
+              .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
+              .set(length - 2);
+            this.tweetsdb[index].likesNum = length - 2;
+          } else {
+            firebase
+              .database()
+              .ref("/tweets/" + keys[index] + "/likes")
+              .push("god");
+
+            firebase
+              .database()
+              .ref("/tweets/" + keys[index] + "/likes")
+              .child(username)
+              .remove();
+            firebase
+              .database()
+              .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
+              .set(length - 2);
+            this.tweetsdb[index].likesNum = length - 2;
+          }
+        } else {
+          //If not liked then add a like
           firebase
             .database()
-            .ref("/tweets/" + keys[index] + "/likes") //acces the likes route
-            .push(username); //add the username so intstead of liking twice next time it's clicked tweet 
-                            //gets unliked
+            .ref("/tweets/" + keys[index] + "/likes")
+            .child(username) //acces the likes route
+            .set(username); //add the username so intstead of liking twice next time it's clicked tweet
+          //gets unliked
 
           firebase
             .database()
             .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
-            .set(length);   //set the amount to the length of the users who liked the post array
+            .set(length); //set the amount to the length of the users who liked the post array
 
           this.tweetsdb[index].likesNum = length; //change tha value likesNum in the object which is displayed
         }

@@ -91,7 +91,7 @@ export default {
     time: String,
     user: String,
     length: Number,
-    likes: Number,
+    likes: String,
     likesNum: Number,
   },
   data() {
