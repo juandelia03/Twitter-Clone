@@ -10,7 +10,7 @@
     <p class="time">{{ time }}</p>
 
     <p class="text">{{ text }}</p>
-    <div  class="deletediv">
+    <div class="deletediv">
       <button class="delete" @click="$emit('deltetwt')">
         <svg viewBox="0 0 24 24" aria-hidden="true" width="19px" height="19px">
           <g>
@@ -57,7 +57,9 @@
             ></path>
           </g>
         </svg>
-        <div><p class="num">{{likesNum}}</p></div>
+        <div>
+          <p class="num">{{ likesNum }}</p>
+        </div>
       </div>
       <div class="circle4">
         <svg
@@ -89,19 +91,17 @@ export default {
     time: String,
     user: String,
     length: Number,
-    likes:Number,
-    likesNum:Number,
+    likes: Number,
+    likesNum: Number,
   },
-  data(){
-    return{
-    }
+  data() {
+    return {};
   },
   methods: {},
 };
 </script>
 
 <style scoped>
-
 .tweet {
   display: flex;
   flex-direction: row;
@@ -234,13 +234,12 @@ export default {
 .delete:hover {
   fill: #e96190;
 }
-.num{
+.num {
   color: #607586;
   position: relative;
   left: 40px;
-
 }
-.icon3{
+.icon3 {
   position: relative;
   left: 4px;
 }

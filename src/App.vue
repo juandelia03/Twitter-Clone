@@ -80,7 +80,8 @@ export default {
     };
   },
   methods: {
-    newTweet(text, index) {
+    //Function to create Tweets
+    newTweet(text, index) {  
       //Check if there is any text to tweet
       if (text === "") {
         return;
@@ -104,74 +105,78 @@ export default {
         if (this.username === "") {
           this.username = "Unknown User";
         }
+        //Create a var which contains current data
         var idN = Math.floor(Math.random() * 100);
         var id = idN.toString();
+        //Create the object tweet and append it to the tweets array
         this.tweets.unshift({
           mainText: text,
           day: time,
           username: this.username,
           idT: id,
           likes: this.likes,
-          likesNum: 0
+          likesNum: 0,
         });
         //Send Data to firebase
         postListRef.push(this.tweets[0]);
-
+        //Create the tweet object which will be displayed with the firebase data and append it to a new array
         this.tweetsdb = [];
-        var ref = firebase.database().ref("/tweets");
+        var ref = firebase.database().ref("/tweets"); //Refer to the directory in firebase
         ref.once("value", (snapshot) => {
-          snapshot.forEach((childSnapshot) => {
+          snapshot.forEach((childSnapshot) => { //Get the key and data of each object in /tweets
             var childKey = childSnapshot.key;
             var childData = childSnapshot.val();
-            this.tweetsdb.unshift({
+            this.tweetsdb.unshift({  //Append the data in the displayed tweets
               mainText: childData.mainText,
               day: childData.day,
               username: childData.username,
               idT: childData.idT,
               likes: childData.likes,
-              likesNum : childData.likesNum
+              likesNum: childData.likesNum,
             });
           });
         });
       }
     },
+
+    //function to delete Tweets
     delet(index) {
-      console.log(index);
-      this.tweetsdb.splice([index], 1);
-      var keys = [];
-      var ref = firebase.database().ref("/tweets");
+      this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
+      var keys = [];   //Every Firebase Object Key will be stored in here
+      var ref = firebase.database().ref("/tweets"); //Look in the /tweets route in firebase
       ref.once("value", (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
+        snapshot.forEach((childSnapshot) => { // Get the key and data of each object in /tweets
           var childKey = childSnapshot.key;
           var childData = childSnapshot.val();
-          keys.unshift(childKey);
+          keys.unshift(childKey); //Append each key in the keys array
         });
         firebase
           .database()
-          .ref("/tweets/" + keys[index])
-          .remove();
+          .ref("/tweets/" + keys[index]) //Look in the route twwets for the selected tweet by key,
+          .remove();           //the key is accesed by index in the keys array
       });
     },
-
-    logcard() {
+    //Function to open the log screen when Login is clicked
+    logcard() { 
       if (this.display === "none") {
         this.display = "flex";
         this.display2 = "none";
       }
     },
+    //Auth function from firebase
     login(LoginData) {
       firebase
         .auth()
-        .signInWithEmailAndPassword(LoginData.email, LoginData.password)
-
+        .signInWithEmailAndPassword(LoginData.email, LoginData.password) //Login with the LoginData emited
+                                                                        //from LoginForm.vue
         .then((userCredential) => {
           // Signed in
           var user = userCredential.user;
-          this.display = "none";
-          this.display2 = "flex";
-          this.email = LoginData.email;
-          this.username = LoginData.email.replace("@gmail.com", "");
-          //display the data in firebase
+          this.display = "none"; //get rid of the Login Page
+          this.display2 = "flex"; //Acces the twitter page
+          this.email = LoginData.email;  
+          this.username = LoginData.email.replace("@gmail.com", ""); //Defining the username using the email Data
+          //display the data stored in firebase once logged in
           var ref = firebase.database().ref("/tweets");
           ref.once("value", (snapshot) => {
             snapshot.forEach((childSnapshot) => {
@@ -183,7 +188,7 @@ export default {
                 username: childData.username,
                 idT: childData.idT,
                 likes: childData.likes,
-                likesNum:childData.likesNum,
+                likesNum: childData.likesNum,
               });
             });
           });
@@ -194,60 +199,47 @@ export default {
           var errorMessage = error.message;
         });
     },
+    //Likes system function
     liked(index) {
-      var username = this.username;
-      //var value = this.tweetsdb[index].likes.includes(username);
-      //if (value === false) {
-      //  this.tweetsdb[index].likes.push(username);
-      //}
-      var keys = [];
-      var obj = []
-      var length = []
+      var username = this.username; 
+      var keys = []; //Store the firebase key of every tweet
+      var obj = []; //Storing every user who liked the tweet
+      var length = []; //Amount of likes
+      var users = [];
       var ref = firebase.database().ref("/tweets");
       ref.once("value", (snapshot) => {
         snapshot.forEach((childSnapshot) => {
           var childKey = childSnapshot.key;
           var childData = childSnapshot.val();
-          keys.unshift(childKey);
-          obj = Object.values(childData.likes)
-          length = Object.keys(childData.likes).length 
-          
-       });
-      if(obj.includes(username)){
-        //var number = length - 1
-        //this.tweetsdb[index].likesNum = number
+          keys.unshift(childKey); //Store every key in keys array
+          obj = Object.values(childData.likes); //Storing every user who liked the tweet
+          length = Object.keys(childData.likes).length; //Storing the amount of likes in each tweets
+          users = Object.values(childData.likes); 
+        });
+        if (obj.includes(username)) { //checking if the loged user already liked the tweet
+          return;                      //If already liked then it must be disliked
+        } else { //If not liked then add a like
           firebase
-          .database()
-          .ref("/tweets/" + keys[index] + "/likes")
-          .remove(Object.value);
-        return
-      }
-      else{
-        firebase
-          .database()
-          .ref("/tweets/" + keys[index] + "/likes")
-          .push(username);
+            .database()
+            .ref("/tweets/" + keys[index] + "/likes") //acces the likes route
+            .push(username); //add the username so intstead of liking twice next time it's clicked tweet 
+                            //gets unliked
 
-        firebase
-          .database()
-          .ref("/tweets/" + keys[index] + "/likesNum")
-          .set(length);
-        
-        this.tweetsdb[index].likesNum = length
-          
-          }
-          
+          firebase
+            .database()
+            .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
+            .set(length);   //set the amount to the length of the users who liked the post array
 
+          this.tweetsdb[index].likesNum = length; //change tha value likesNum in the object which is displayed
+        }
       });
-
     },
+    //When click register open the register window function
     registercard() {
       this.display2 = "none";
       this.display3 = "flex";
     },
     register(Registerdata) {
-      //this.email = Registerdata.email
-      //this.username = Registerdata.user
       firebase
         .auth()
         .createUserWithEmailAndPassword(
