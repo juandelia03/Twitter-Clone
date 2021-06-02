@@ -31,7 +31,7 @@
           :text="tweet.mainText"
           :time="tweet.day"
           :user="tweet.username"
-          :liked="tweet.likes"
+          :likesNum="tweet.likesNum"
         />
       </div>
     </div>
@@ -112,6 +112,7 @@ export default {
           username: this.username,
           idT: id,
           likes: this.likes,
+          likesNum: 0
         });
         //Send Data to firebase
         postListRef.push(this.tweets[0]);
@@ -128,6 +129,7 @@ export default {
               username: childData.username,
               idT: childData.idT,
               likes: childData.likes,
+              likesNum : childData.likesNum
             });
           });
         });
@@ -181,6 +183,7 @@ export default {
                 username: childData.username,
                 idT: childData.idT,
                 likes: childData.likes,
+                likesNum:childData.likesNum,
               });
             });
           });
@@ -199,6 +202,7 @@ export default {
       //}
       var keys = [];
       var obj = []
+      var length = []
       var ref = firebase.database().ref("/tweets");
       ref.once("value", (snapshot) => {
         snapshot.forEach((childSnapshot) => {
@@ -206,17 +210,36 @@ export default {
           var childData = childSnapshot.val();
           keys.unshift(childKey);
           obj = Object.values(childData.likes)
-          console.log(obj)
+          length = Object.keys(childData.likes).length 
+          
        });
       if(obj.includes(username)){
-        return
-      }
-      else{        firebase
+        //var number = length - 1
+        //this.tweetsdb[index].likesNum = number
+          firebase
           .database()
           .ref("/tweets/" + keys[index] + "/likes")
-          .push(username);}
+          .remove(Object.value);
+        return
+      }
+      else{
+        firebase
+          .database()
+          .ref("/tweets/" + keys[index] + "/likes")
+          .push(username);
+
+        firebase
+          .database()
+          .ref("/tweets/" + keys[index] + "/likesNum")
+          .set(length);
+        
+        this.tweetsdb[index].likesNum = length
+          
+          }
+          
 
       });
+
     },
     registercard() {
       this.display2 = "none";

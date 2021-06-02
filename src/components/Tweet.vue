@@ -10,7 +10,7 @@
     <p class="time">{{ time }}</p>
 
     <p class="text">{{ text }}</p>
-    <div v-if="myTweet===true" class="deletediv">
+    <div  class="deletediv">
       <button class="delete" @click="$emit('deltetwt')">
         <svg viewBox="0 0 24 24" aria-hidden="true" width="19px" height="19px">
           <g>
@@ -57,6 +57,7 @@
             ></path>
           </g>
         </svg>
+        <div><p class="num">{{likesNum}}</p></div>
       </div>
       <div class="circle4">
         <svg
@@ -88,7 +89,8 @@ export default {
     time: String,
     user: String,
     length: Number,
-    liked:Array,
+    likes:Number,
+    likesNum:Number,
   },
   data(){
     return{
@@ -99,6 +101,7 @@ export default {
 </script>
 
 <style scoped>
+
 .tweet {
   display: flex;
   flex-direction: row;
@@ -139,7 +142,7 @@ export default {
   font-size: 15px;
   color: #5b7183;
   font-weight: 200px;
-  min-width: 100px;
+  min-width: 150px;
 }
 .img {
   width: 48px;
@@ -230,5 +233,15 @@ export default {
 }
 .delete:hover {
   fill: #e96190;
+}
+.num{
+  color: #607586;
+  position: relative;
+  left: 40px;
+
+}
+.icon3{
+  position: relative;
+  left: 4px;
 }
 </style>
