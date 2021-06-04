@@ -45,6 +45,7 @@
       </div>
       <div class="circle3" @click="$emit('liked')">
         <svg
+          @click="col"
           class="icon3"
           viewBox="0 0 24 24"
           width="19px"
@@ -58,7 +59,7 @@
           </g>
         </svg>
         <div>
-          <p class="num">{{ likesNum }}</p>
+          <span :style="{ color: color }" class="num">{{ likesNum }}</span>
         </div>
       </div>
       <div class="circle4">
@@ -93,6 +94,7 @@ export default {
     length: Number,
     likes: String,
     likesNum: Number,
+    color: String,
   },
   data() {
     return {};

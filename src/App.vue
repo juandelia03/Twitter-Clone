@@ -32,6 +32,7 @@
           :time="tweet.day"
           :user="tweet.username"
           :likesNum="tweet.likesNum"
+          :color="tweet.likeColor"
         />
       </div>
     </div>
@@ -77,6 +78,7 @@ export default {
       display2: "flex",
       display3: "none",
       likes: ["god"],
+      color: "",
     };
   },
   methods: {
@@ -116,6 +118,7 @@ export default {
           idT: id,
           likes: this.likes,
           likesNum: 0,
+          likeColor: "#607586",
         });
         //Send Data to firebase
         postListRef.push(this.tweets[0]);
@@ -135,6 +138,7 @@ export default {
               idT: childData.idT,
               likes: childData.likes,
               likesNum: childData.likesNum,
+              likeColor: childData.likeColor,
             });
           });
         });
@@ -192,6 +196,7 @@ export default {
                 idT: childData.idT,
                 likes: childData.likes,
                 likesNum: childData.likesNum,
+                likeColor: childData.likeColor,
               });
             });
           });
@@ -206,72 +211,109 @@ export default {
     liked(index) {
       var username = this.username;
       var keys = []; //Store the firebase key of every tweet
-      var obj = []; //Storing every user who liked the tweet
       var length = []; //Amount of likes
-      var num = 0;
       var ref = firebase.database().ref("/tweets");
-      console.log(num);
+      var userstemp = [];
+      var bool = [];
+      var likesNum = 0;
+      var users = [];
 
       ref.once("value", (snapshot) => {
         snapshot.forEach((childSnapshot) => {
           var childKey = childSnapshot.key;
           var childData = childSnapshot.val();
           keys.unshift(childKey); //Store every key in keys array
-          obj = Object.values(childData.likes); //Storing every user who liked the tweet
-          length = Object.keys(childData.likes).length; //Storing the amount of likes in each tweets
-          num = childData.likesNum;
-          console.log(obj.length);
-
-          //usersKey.unshift(Object.keys)
+          likesNum = childData.likesNum;
         });
-        if (Object.values(obj).includes(username)) {
-          //checking if the loged user already liked the tweet
-          //If already liked then it must be disliked
-          if (obj.length >= 2) {
-            firebase
-              .database()
-              .ref("/tweets/" + keys[index] + "/likes")
-              .child(username)
-              .remove();
+        firebase
+          .database()
+          .ref("/tweets/" + keys[index] + "/likes")
+          .once("value", (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+              var childData = childSnapshot.val();
+              userstemp.push(childData);
+              var users = Object.values(userstemp);
+              this.bool = users.includes(username);
+            });
 
-            firebase
-              .database()
-              .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
-              .set(length - 2);
-            this.tweetsdb[index].likesNum = length - 2;
-          } else {
-            firebase
-              .database()
-              .ref("/tweets/" + keys[index] + "/likes")
-              .push("god");
+            if (this.bool == true) {
+              var Likes2 = [];
+              var Color2 = "";
+              //checking if the loged user already liked the tweet
+              //If already liked then it must be disliked
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likes")
+                .child(username)
+                .remove();
 
-            firebase
-              .database()
-              .ref("/tweets/" + keys[index] + "/likes")
-              .child(username)
-              .remove();
-            firebase
-              .database()
-              .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
-              .set(length - 2);
-            this.tweetsdb[index].likesNum = length - 2;
-          }
-        } else {
-          //If not liked then add a like
-          firebase
-            .database()
-            .ref("/tweets/" + keys[index] + "/likes")
-            .child(username) //acces the likes route
-            .set(username); //add the username so intstead of liking twice next time it's clicked tweet
-          //gets unliked
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likesNum")
+                .set(firebase.database.ServerValue.increment(-1));
 
-          firebase
-            .database()
-            .ref("/tweets/" + keys[index] + "/likesNum") //acces the likesNum route
-            .set(length); //set the amount to the length of the users who liked the post array
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likeColor")
+                .set("#607586");
 
-          this.tweetsdb[index].likesNum = length; //change tha value likesNum in the object which is displayed
-        }
+              var LikesRef2 = firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likesNum");
+              LikesRef2.on("value", (snapshot) => {
+                var Data = snapshot.val();
+                Likes2 = Data;
+              });
+              var Color2ref = firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likeColor");
+              Color2ref.on("value", (snapshot) => {
+                var Data = snapshot.val();
+                Color2 = Data;
+              });
+              this.tweetsdb[index].likeColor = Color2;
+              this.tweetsdb[index].likesNum = this.tweetsdb[index].likesNum - 1;
+            } else {
+              var Likes = 0;
+              var Color = "";
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likes")
+                .child(username) //acces the likes route
+                .set(username);
+
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likesNum")
+                .set(firebase.database.ServerValue.increment(+1));
+
+              firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likeColor")
+                .set("#e0245e");
+
+              var LikesRef = firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likesNum");
+              LikesRef.on("value", (snapshot) => {
+                var Data = snapshot.val();
+                Likes = Data;
+              });
+
+              var Colorref = firebase
+                .database()
+                .ref("/tweets/" + keys[index] + "/likeColor");
+              Colorref.on("value", (snapshot) => {
+                var Data = snapshot.val();
+                Color = Data;
+              });
+
+              this.tweetsdb[index].likesNum = this.tweetsdb[index].likesNum =
+                this.tweetsdb[index].likesNum + 1;
+              this.tweetsdb[index].likeColor = Color;
+              //this.tweetsdb[index].likesNum = users.length; //change tha value likesNum in the object which is displayed
+            }
+          });
       });
     },
     //When click register open the register window function
