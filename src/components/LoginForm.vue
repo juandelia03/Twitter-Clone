@@ -14,6 +14,7 @@
           ></path>
         </g>
       </svg>
+      <p class="error">{{ error }}</p>
       <h1>
         Inicia sesión en <br />
         Twitter
@@ -39,6 +40,7 @@ export default {
   name: "LoginForm",
   props: {
     display: String,
+    error: String,
   },
   data() {
     return {
@@ -98,5 +100,13 @@ h1 {
   font-weight: bolder;
   align-items: center;
   margin-top: 32px;
+}
+.input:focus {
+  border: 1px solid #1da1f2;
+}
+
+.error {
+  color: #e0245e;
+  padding-top: 15px;
 }
 </style>

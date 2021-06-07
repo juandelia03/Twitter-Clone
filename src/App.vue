@@ -13,8 +13,12 @@
       @logcard="logcard"
       :style="{ display: display2 }"
     />
-    <LoginForm :style="{ display: display }" @login="login" />
-    <RegisterForm :style="{ display: display3 }" @register="register" />
+    <LoginForm :error="errorMsg" :style="{ display: display }" @login="login" />
+    <RegisterForm
+      :error="regErrorMsg"
+      :style="{ display: display3 }"
+      @register="register"
+    />
   </div>
 
   <div v-else class="container">
@@ -36,7 +40,7 @@
         />
       </div>
     </div>
-    <Search class="search" />
+    <Search @search="search" class="search" />
   </div>
 </template>
 
@@ -79,6 +83,8 @@ export default {
       display3: "none",
       likes: ["god"],
       color: "",
+      errorMsg: "",
+      regErrorMsg: "",
     };
   },
   methods: {
@@ -147,21 +153,25 @@ export default {
 
     //function to delete Tweets
     delet(index) {
-      this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
-      var keys = []; //Every Firebase Object Key will be stored in here
-      var ref = firebase.database().ref("/tweets"); //Look in the /tweets route in firebase
-      ref.once("value", (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          // Get the key and data of each object in /tweets
-          var childKey = childSnapshot.key;
-          var childData = childSnapshot.val();
-          keys.unshift(childKey); //Append each key in the keys array
+      if (this.username == this.tweetsdb[index].username) {
+        this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
+        var keys = []; //Every Firebase Object Key will be stored in here
+        var ref = firebase.database().ref("/tweets"); //Look in the /tweets route in firebase
+        ref.once("value", (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            // Get the key and data of each object in /tweets
+            var childKey = childSnapshot.key;
+            var childData = childSnapshot.val();
+            keys.unshift(childKey); //Append each key in the keys array
+          });
+          firebase
+            .database()
+            .ref("/tweets/" + keys[index]) //Look in the route twwets for the selected tweet by key,
+            .remove(); //the key is accesed by index in the keys array
         });
-        firebase
-          .database()
-          .ref("/tweets/" + keys[index]) //Look in the route twwets for the selected tweet by key,
-          .remove(); //the key is accesed by index in the keys array
-      });
+      } else {
+        alert("This Tweet isn't yours!");
+      }
     },
     //Function to open the log screen when Login is clicked
     logcard() {
@@ -205,6 +215,7 @@ export default {
         .catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
+          this.errorMsg = errorMessage;
         });
     },
     //Likes system function
@@ -338,8 +349,43 @@ export default {
         .catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
+          this.regErrorMsg = errorCode;
           // ..
         });
+    },
+    search(search) {
+      if (search === "") {
+        this.tweetsdb = [];
+        var ref = firebase.database().ref("/tweets");
+        ref.once("value", (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            var childKey = childSnapshot.key;
+            var childData = childSnapshot.val();
+            this.tweetsdb.unshift({
+              mainText: childData.mainText,
+              day: childData.day,
+              username: childData.username,
+              idT: childData.idT,
+              likes: childData.likes,
+              likesNum: childData.likesNum,
+              likeColor: childData.likeColor,
+            });
+          });
+        });
+      } else {
+        console.log(search);
+        const tweetsText = this.tweetsdb.map((tweet) => {
+          const tweetText = tweet.mainText;
+          return tweetText; //TEXTO DE TODOS LOS TWEETS
+        });
+        const filteredTexts = tweetsText.includes(search);
+        console.log(filteredTexts);
+        var result = this.tweetsdb.filter((tweet) => {
+          return tweet.mainText === search;
+        });
+        console.log(result);
+        this.tweetsdb = result;
+      }
     },
   },
 };

@@ -1,7 +1,12 @@
 <template>
   <div class="view">
     <div class="input">
-      <input type="text" placeholder="Search  Tweet" />
+      <input
+        @change="$emit('search', search)"
+        v-model="search"
+        type="text"
+        placeholder="Search  Tweet"
+      />
     </div>
     <div class="card">
       <div class="item2">
@@ -56,6 +61,12 @@
 <script>
 export default {
   name: "Search",
+  data() {
+    return {
+      search: "",
+    };
+  },
+  methods: {},
 };
 </script>
 

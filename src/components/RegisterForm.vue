@@ -21,6 +21,7 @@
         "
       >
         <!--<input v-model="user" class=input placeholder="Usuario" type="text">-->
+        <p class="error">{{ error }}</p>
         <input v-model="email" class="input" placeholder="Email" type="text" />
         <input
           v-model="password"
@@ -37,6 +38,9 @@
 <script>
 export default {
   name: "RegisterForm",
+  props: {
+    error: String,
+  },
   data() {
     return {
       registerData: {
@@ -101,5 +105,9 @@ h1 {
 }
 .input:focus {
   border: 1px solid #1da1f2;
+}
+.error {
+  color: #e0245e;
+  padding-top: 15px;
 }
 </style>
