@@ -109,4 +109,16 @@ h1 {
   color: #e0245e;
   padding-top: 15px;
 }
+@media screen and (max-width: 670px) {
+  .input {
+    width: 100%;
+  }
+  .tweet-btn {
+    width: 100%;
+    margin-left: 5px;
+  }
+  .card {
+    margin-left: 100px;
+  }
+}
 </style>

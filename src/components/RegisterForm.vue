@@ -102,6 +102,7 @@ h1 {
   font-weight: bolder;
   align-items: center;
   margin-top: 32px;
+  margin-left: 5px;
 }
 .input:focus {
   border: 1px solid #1da1f2;
@@ -109,5 +110,17 @@ h1 {
 .error {
   color: #e0245e;
   padding-top: 15px;
+}
+@media screen and (max-width: 670px) {
+  .input {
+    width: 100%;
+  }
+  .tweet-btn {
+    width: 100%;
+    margin-left: 5px;
+  }
+  .card {
+    margin-left: 100px;
+  }
 }
 </style>

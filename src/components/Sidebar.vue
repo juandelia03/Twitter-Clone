@@ -103,6 +103,18 @@
       <div class="tweet-btn">
         <span>Tweet</span>
       </div>
+      <div class="user-data">
+        <img
+          class="img"
+          src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
+        />
+        <div class="user">
+          <span class="name">{{ name }}</span>
+
+          <span class="user-name">@{{ name }}</span>
+        </div>
+        <span class="dots">...</span>
+      </div>
     </div>
   </div>
 </template>
@@ -110,6 +122,9 @@
 <script>
 export default {
   name: "Sidebar",
+  props: {
+    name: String,
+  },
 };
 </script>
 
@@ -130,6 +145,7 @@ export default {
 .bird:hover {
   border-radius: 200%;
   background-color: #e8f5fe;
+  cursor: pointer;
 }
 .item {
   display: flex;
@@ -152,6 +168,7 @@ export default {
 .item:hover {
   border-radius: 40px;
   background: #e8f5fe;
+  cursor: pointer;
 }
 .item:hover svg {
   fill: #1da1f2;
@@ -178,6 +195,44 @@ export default {
 .tweet-btn:hover {
   background-color: #1e92da;
   color: white;
+}
+.user-data {
+  display: flex;
+  height: 60px;
+  margin-top: 50px;
+  align-items: center;
+}
+.user-data:hover {
+  cursor: pointer;
+}
+.img {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  margin-left: 15px;
+}
+.user {
+  margin-left: 15px;
+}
+.dots {
+  margin-left: 50px;
+  font-weight: bolder;
+  font-size: 20px;
+  padding-bottom: 10px;
+}
+.name {
+  font-weight: bold;
+  display: flex;
+}
+.user-name {
+  color: #5b7183;
+  position: relative;
+  top: 3px;
+}
+.user-data:hover {
+  border-radius: 40px;
+  background: #e8f5fe;
 }
 @media screen and (max-width: 570px) {
   .view {

@@ -22,7 +22,7 @@
   </div>
 
   <div v-else class="container">
-    <Sidebar />
+    <Sidebar :name="username" />
     <div class="feed">
       <Feed class="tweet-form" @submited="newTweet" />
       <div class="tweets">
@@ -107,14 +107,38 @@ export default {
           " " +
           today.getHours() +
           ":" +
-          today.getMinutes();
+          String(today.getMinutes()).padStart(2, "0") +
+          ":" +
+          String(today.getSeconds()).padStart(2, "0");
+
         this.day = time;
         // If no user is given give a default
         if (this.username === "") {
           this.username = "Unknown User";
         }
         //Create a var which contains current data
-        var idN = Math.floor(Math.random() * 100);
+        //var idN =
+        //  "_" +
+        //  Math.random()
+        //    .toString(36)
+        //    .substr(2, 9);
+        var mili = String(today.getMilliseconds()).padStart(3, "0");
+        var mins = String(today.getMinutes()).padStart(2, "0");
+        var sec = String(today.getSeconds()).padStart(2, "0");
+        var idN =
+          today.getFullYear() +
+          "" +
+          (today.getMonth() + 1) +
+          "" +
+          today.getDate() +
+          "" +
+          today.getHours() +
+          "" +
+          mins +
+          "" +
+          sec +
+          "" +
+          mili;
         var id = idN.toString();
         //Create the object tweet and append it to the tweets array
         this.tweets.unshift({
@@ -127,7 +151,13 @@ export default {
           likeColor: "#607586",
         });
         //Send Data to firebase
-        postListRef.push(this.tweets[0]);
+
+        firebase
+          .database()
+          .ref("/tweets/")
+          .child(this.tweets[0].idT)
+          .set(this.tweets[0]);
+
         //Create the tweet object which will be displayed with the firebase data and append it to a new array
         this.tweetsdb = [];
         var ref = firebase.database().ref("/tweets"); //Refer to the directory in firebase
@@ -238,7 +268,7 @@ export default {
         });
         firebase
           .database()
-          .ref("/tweets/" + keys[index] + "/likes")
+          .ref("/tweets/" + this.tweetsdb[index].idT + "/likes")
           .once("value", (snapshot) => {
             snapshot.forEach((childSnapshot) => {
               var childData = childSnapshot.val();
@@ -254,30 +284,30 @@ export default {
               //If already liked then it must be disliked
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likes")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likes")
                 .child(username)
                 .remove();
 
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likesNum")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likesNum")
                 .set(firebase.database.ServerValue.increment(-1));
 
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likeColor")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likeColor")
                 .set("#607586");
 
               var LikesRef2 = firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likesNum");
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likesNum");
               LikesRef2.on("value", (snapshot) => {
                 var Data = snapshot.val();
                 Likes2 = Data;
               });
               var Color2ref = firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likeColor");
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likeColor");
               Color2ref.on("value", (snapshot) => {
                 var Data = snapshot.val();
                 Color2 = Data;
@@ -289,23 +319,23 @@ export default {
               var Color = "";
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likes")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likes")
                 .child(username) //acces the likes route
                 .set(username);
 
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likesNum")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likesNum")
                 .set(firebase.database.ServerValue.increment(+1));
 
               firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likeColor")
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likeColor")
                 .set("#e0245e");
 
               var LikesRef = firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likesNum");
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likesNum");
               LikesRef.on("value", (snapshot) => {
                 var Data = snapshot.val();
                 Likes = Data;
@@ -313,7 +343,7 @@ export default {
 
               var Colorref = firebase
                 .database()
-                .ref("/tweets/" + keys[index] + "/likeColor");
+                .ref("/tweets/" + this.tweetsdb[index].idT + "/likeColor");
               Colorref.on("value", (snapshot) => {
                 var Data = snapshot.val();
                 Color = Data;
@@ -397,7 +427,6 @@ export default {
   margin: 0;
 }
 .container {
-  height: 100vh;
   display: flex;
   justify-content: space-evenly;
   align-items: stretch;

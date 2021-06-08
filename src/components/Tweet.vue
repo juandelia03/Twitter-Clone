@@ -199,6 +199,7 @@ export default {
 .circle1:hover {
   background-color: #e1eff6;
   fill: #82c7f4;
+  cursor: pointer;
 }
 .circle2 {
   display: flex;
@@ -212,6 +213,7 @@ export default {
 .circle2:hover {
   background-color: #e1f1e8;
   fill: #6dd094;
+  cursor: pointer;
 }
 .circle3 {
   display: flex;
@@ -225,6 +227,7 @@ export default {
 .circle3:hover {
   background-color: #f4d2dc;
   fill: #e75d8b;
+  cursor: pointer;
 }
 .circle4 {
   display: flex;
@@ -238,6 +241,7 @@ export default {
 .circle4:hover {
   background-color: #e1eff6;
   fill: #82c7f4;
+  cursor: pointer;
 }
 .deletediv {
   display: flex;
@@ -254,6 +258,7 @@ export default {
 }
 .delete:hover {
   fill: #e96190;
+  cursor: pointer;
 }
 .num {
   color: #607586;

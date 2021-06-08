@@ -19,13 +19,13 @@
         pasando ahora</span
       >
       <div class="center">
-      <span class="subtext">Únete a Twitter hoy mismo.</span>
-      <button class="tweet-btn" @click="$emit('registercard')">
-        Regístrate
-      </button>
-      <button class="tweet-btn2" @click="$emit('logcard')">
-        Iniciar sesión
-      </button>
+        <span class="subtext">Únete a Twitter hoy mismo.</span>
+        <button class="tweet-btn" @click="$emit('registercard')">
+          Regístrate
+        </button>
+        <button class="tweet-btn2" @click="$emit('logcard')">
+          Iniciar sesión
+        </button>
       </div>
     </div>
   </div>
@@ -91,12 +91,15 @@ export default {
   border-style: solid;
   border-width: 1px;
 }
-.center{
-    display: flex;
-    flex-direction: column;
+.center {
+  display: flex;
+  flex-direction: column;
 }
-@media screen and (max-width: 755px) {
-  .container{
+.container {
+  height: 90vh;
+}
+@media screen and (max-width: 900px) {
+  .container {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -105,9 +108,17 @@ export default {
     width: 100%;
     justify-content: center;
   }
-  svg{
-    width:140px;
-    height:140px ;
+  svg {
+    width: 140px;
+    height: 140px;
+  }
+  .main-text {
+    margin-top: 0px;
+  }
+}
+@media screen and (max-width: 725px) {
+  .view {
+    margin-left: 150px;
   }
 }
 </style>
