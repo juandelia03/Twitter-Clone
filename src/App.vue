@@ -381,7 +381,7 @@ export default {
         const filteredTexts = tweetsText.includes(search);
         console.log(filteredTexts);
         var result = this.tweetsdb.filter((tweet) => {
-          return tweet.mainText === search;
+          return tweet.mainText.includes(search);
         });
         console.log(result);
         this.tweetsdb = result;
