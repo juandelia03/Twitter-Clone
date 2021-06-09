@@ -25,7 +25,7 @@
       </button>
     </div>
     <div class="svgs">
-      <div class="circle1">
+      <div @click="$emit('comment')" class="circle1">
         <svg viewBox="0 0 24 24" width="19px" height="19px" aria-hidden="true">
           <g>
             <path
@@ -156,6 +156,7 @@ export default {
   align-self: center;
   position: relative;
   bottom: 22px;
+  max-width: 400px;
 }
 .arroba {
   padding-top: 10px;

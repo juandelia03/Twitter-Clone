@@ -21,13 +21,14 @@
     />
   </div>
 
-  <div v-else class="container">
+  <div v-else :style="{ display: tweetsDisplay }" class="container">
     <Sidebar :name="username" />
     <div class="feed">
       <Feed class="tweet-form" @submited="newTweet" />
       <div class="tweets">
         <Tweet
           @liked="liked(index)"
+          @comment="comment(index)"
           @deltetwt="delet(index)"
           class="tweets-feed"
           v-for="(tweet, index) in tweetsdb"
@@ -42,6 +43,15 @@
     </div>
     <Search @search="search" class="search" />
   </div>
+  <Answer
+    @addComment="addComment"
+    @back="backToTweets"
+    :style="{ display: answerDisplay }"
+    :user="this.answeredTweet.user"
+    :text="this.answeredTweet.text"
+    :time="this.answeredTweet.day"
+    :key="this.answeredTweet.key"
+  />
 </template>
 
 <script>
@@ -56,6 +66,7 @@ import LoginImg from "./components/LoginImg";
 import Login from "./components/Login";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import Answer from "./components/Answer.vue";
 import db from "./db";
 export default {
   name: "App",
@@ -68,6 +79,7 @@ export default {
     Login,
     LoginForm,
     RegisterForm,
+    Answer,
   },
   data() {
     return {
@@ -81,10 +93,14 @@ export default {
       display: "none",
       display2: "flex",
       display3: "none",
+      tweetsDisplay: "flex",
+      answerDisplay: "none",
       likes: ["god"],
       color: "",
       errorMsg: "",
       regErrorMsg: "",
+      answeredTweet: {},
+      tempKey: "",
     };
   },
   methods: {
@@ -416,6 +432,43 @@ export default {
         console.log(result);
         this.tweetsdb = result;
       }
+    },
+    comment(index) {
+      this.tweetsDisplay = "none";
+      this.answerDisplay = "flex";
+      this.tempKey = this.tweetsdb[index].idT;
+      this.answeredTweet = {
+        text: this.tweetsdb[index].mainText,
+        user: this.tweetsdb[index].username,
+        day: this.tweetsdb[index].day,
+      };
+    },
+    backToTweets() {
+      this.tweetsDisplay = "flex";
+      this.answerDisplay = "none";
+    },
+    addComment(text) {
+      var today = new Date();
+      var time =
+        today.getFullYear() +
+        "-" +
+        (today.getMonth() + 1) +
+        "-" +
+        today.getDate() +
+        " " +
+        today.getHours() +
+        ":" +
+        String(today.getMinutes()).padStart(2, "0") +
+        ":" +
+        String(today.getSeconds()).padStart(2, "0");
+
+      this.day = time;
+      firebase
+        .database()
+        .ref("/tweets/" + this.tempKey + "/comments")
+        .push({ text: text, user: this.username, time: this.day });
+      this.tweetsDisplay = "flex";
+      this.answerDisplay = "none";
     },
   },
 };
