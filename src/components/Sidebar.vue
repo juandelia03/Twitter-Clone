@@ -234,7 +234,7 @@ export default {
   border-radius: 40px;
   background: #e8f5fe;
 }
-@media screen and (max-width: 570px) {
+@media screen and (max-width: 850px) {
   .view {
     display: none;
   }
