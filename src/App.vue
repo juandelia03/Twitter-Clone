@@ -24,12 +24,21 @@
   <div v-else :style="{ display: tweetsDisplay }" class="container">
     <Sidebar :name="username" />
     <div class="feed">
-      <Feed class="tweet-form" @submited="newTweet" />
+      <Feed
+        :style="{ display: publishDisplay }"
+        class="tweet-form"
+        @submited="newTweet"
+      />
       <div class="tweets">
+        <Commentsheader
+          v-if="watchingComments == true"
+          @backToFeed="backToFeed"
+        />
         <Tweet
           @liked="liked(index)"
           @comment="comment(index)"
           @deltetwt="delet(index)"
+          @commentsView="commentsView(index)"
           class="tweets-feed"
           v-for="(tweet, index) in tweetsdb"
           :key="tweet.idT"
@@ -38,6 +47,7 @@
           :user="tweet.username"
           :likesNum="tweet.likesNum"
           :color="tweet.likeColor"
+          :watchingComments="watchingComments"
         />
       </div>
     </div>
@@ -68,6 +78,7 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Answer from "./components/Answer.vue";
 import db from "./db";
+import Commentsheader from "./components/commentsheader.vue";
 export default {
   name: "App",
   components: {
@@ -80,6 +91,7 @@ export default {
     LoginForm,
     RegisterForm,
     Answer,
+    Commentsheader,
   },
   data() {
     return {
@@ -101,6 +113,8 @@ export default {
       regErrorMsg: "",
       answeredTweet: {},
       tempKey: "",
+      publishDisplay: "flex",
+      watchingComments: false,
     };
   },
   methods: {
@@ -165,6 +179,7 @@ export default {
           likes: this.likes,
           likesNum: 0,
           likeColor: "#607586",
+          commentsNum: 0,
         });
         //Send Data to firebase
 
@@ -466,9 +481,60 @@ export default {
       firebase
         .database()
         .ref("/tweets/" + this.tempKey + "/comments")
-        .push({ text: text, user: this.username, time: this.day });
+        .push({
+          text: text,
+          user: this.username,
+          time: this.day,
+          likesNum: -2,
+        });
+      firebase
+        .database()
+        .ref("/tweets/" + this.tempKey + "/commentsNum")
+        .set(firebase.database.ServerValue.increment(+1));
       this.tweetsDisplay = "flex";
       this.answerDisplay = "none";
+    },
+    commentsView(index) {
+      this.publishDisplay = "none";
+      const selTweet = this.tweetsdb[index];
+      this.tweetsdb = [];
+      this.tweetsdb.push(selTweet);
+      this.watchingComments = true;
+      var ref = firebase
+        .database()
+        .ref("/tweets/" + selTweet.idT + "/comments");
+      ref.once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childData = childSnapshot.val();
+          console.log(childData);
+          this.tweetsdb.push({
+            mainText: childData.text,
+            day: childData.time,
+            username: childData.user,
+          });
+        });
+      });
+    },
+    backToFeed() {
+      this.watchingComments = false;
+      this.publishDisplay = "flex";
+      this.tweetsdb = [];
+      var ref = firebase.database().ref("/tweets");
+      ref.once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          this.tweetsdb.unshift({
+            mainText: childData.mainText,
+            day: childData.day,
+            username: childData.username,
+            idT: childData.idT,
+            likes: childData.likes,
+            likesNum: childData.likesNum,
+            likeColor: childData.likeColor,
+          });
+        });
+      });
     },
   },
 };

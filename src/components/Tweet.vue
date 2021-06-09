@@ -9,22 +9,9 @@
     <p class="arroba">@{{ user }}</p>
     <p class="time">{{ time }}</p>
 
-    <p class="text">{{ text }}</p>
-    <div class="deletediv">
-      <button class="delete" @click="$emit('deltetwt')">
-        <svg viewBox="0 0 24 24" aria-hidden="true" width="19px" height="19px">
-          <g>
-            <path
-              d="M20.746 5.236h-3.75V4.25c0-1.24-1.01-2.25-2.25-2.25h-5.5c-1.24 0-2.25 1.01-2.25 2.25v.986h-3.75c-.414 0-.75.336-.75.75s.336.75.75.75h.368l1.583 13.262c.216 1.193 1.31 2.027 2.658 2.027h8.282c1.35 0 2.442-.834 2.664-2.072l1.577-13.217h.368c.414 0 .75-.336.75-.75s-.335-.75-.75-.75zM8.496 4.25c0-.413.337-.75.75-.75h5.5c.413 0 .75.337.75.75v.986h-7V4.25zm8.822 15.48c-.1.55-.664.795-1.18.795H7.854c-.517 0-1.083-.246-1.175-.75L5.126 6.735h13.74L17.32 19.732z"
-            ></path>
-            <path
-              d="M10 17.75c.414 0 .75-.336.75-.75v-7c0-.414-.336-.75-.75-.75s-.75.336-.75.75v7c0 .414.336.75.75.75zm4 0c.414 0 .75-.336.75-.75v-7c0-.414-.336-.75-.75-.75s-.75.336-.75.75v7c0 .414.336.75.75.75z"
-            ></path>
-          </g>
-        </svg>
-      </button>
-    </div>
-    <div class="svgs">
+    <p @click="$emit('commentsView')" class="text">{{ text }}</p>
+
+    <div v-if="likesNum >= 0" class="svgs">
       <div @click="$emit('comment')" class="circle1">
         <svg viewBox="0 0 24 24" width="19px" height="19px" aria-hidden="true">
           <g>
@@ -34,6 +21,7 @@
           </g>
         </svg>
       </div>
+      <span class="num2">1</span>
       <div class="circle2">
         <svg viewBox="0 0 24 24" width="19px" height="19px" aria-hidden="true">
           <g>
@@ -81,24 +69,18 @@
           <span :style="{ color: color }" class="num">{{ likesNum }}</span>
         </div>
       </div>
-      <div class="circle4">
-        <svg
-          class="icon4"
-          viewBox="0 0 24 24"
-          width="19px"
-          height="19px"
-          aria-hidden="true"
-        >
+      <button class="delete" @click="$emit('deltetwt')">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="19px" height="19px">
           <g>
             <path
-              d="M17.53 7.47l-5-5c-.293-.293-.768-.293-1.06 0l-5 5c-.294.293-.294.768 0 1.06s.767.294 1.06 0l3.72-3.72V15c0 .414.336.75.75.75s.75-.336.75-.75V4.81l3.72 3.72c.146.147.338.22.53.22s.384-.072.53-.22c.293-.293.293-.767 0-1.06z"
+              d="M20.746 5.236h-3.75V4.25c0-1.24-1.01-2.25-2.25-2.25h-5.5c-1.24 0-2.25 1.01-2.25 2.25v.986h-3.75c-.414 0-.75.336-.75.75s.336.75.75.75h.368l1.583 13.262c.216 1.193 1.31 2.027 2.658 2.027h8.282c1.35 0 2.442-.834 2.664-2.072l1.577-13.217h.368c.414 0 .75-.336.75-.75s-.335-.75-.75-.75zM8.496 4.25c0-.413.337-.75.75-.75h5.5c.413 0 .75.337.75.75v.986h-7V4.25zm8.822 15.48c-.1.55-.664.795-1.18.795H7.854c-.517 0-1.083-.246-1.175-.75L5.126 6.735h13.74L17.32 19.732z"
             ></path>
             <path
-              d="M19.708 21.944H4.292C3.028 21.944 2 20.916 2 19.652V14c0-.414.336-.75.75-.75s.75.336.75.75v5.652c0 .437.355.792.792.792h15.416c.437 0 .792-.355.792-.792V14c0-.414.336-.75.75-.75s.75.336.75.75v5.652c0 1.264-1.028 2.292-2.292 2.292z"
+              d="M10 17.75c.414 0 .75-.336.75-.75v-7c0-.414-.336-.75-.75-.75s-.75.336-.75.75v7c0 .414.336.75.75.75zm4 0c.414 0 .75-.336.75-.75v-7c0-.414-.336-.75-.75-.75s-.75.336-.75.75v7c0 .414.336.75.75.75z"
             ></path>
           </g>
         </svg>
-      </div>
+      </button>
     </div>
   </div>
 </template>
@@ -137,6 +119,13 @@ export default {
   width: 600px;
   margin-bottom: 0px;
   justify-content: flex-start;
+  background-color: white;
+}
+.tweet:hover {
+  background-color: #f7f7f7;
+}
+.tweet:hover .delete {
+  background-color: #f7f7f7;
 }
 .user {
   padding-top: 10px;
@@ -156,7 +145,9 @@ export default {
   align-self: center;
   position: relative;
   bottom: 22px;
-  max-width: 400px;
+  min-width: 400px;
+  max-width: 401px;
+  min-height: 40px;
 }
 .arroba {
   padding-top: 10px;
@@ -202,6 +193,9 @@ export default {
   fill: #82c7f4;
   cursor: pointer;
 }
+.circle1:hover + .num2 {
+  color: #82c7f4;
+}
 .circle2 {
   display: flex;
   justify-content: center;
@@ -230,6 +224,9 @@ export default {
   fill: #e75d8b;
   cursor: pointer;
 }
+.circle3:hover + .num {
+  color: #e75d8b;
+}
 .circle4 {
   display: flex;
   justify-content: center;
@@ -246,16 +243,15 @@ export default {
 }
 .deletediv {
   display: flex;
-
   width: 100%;
   justify-content: flex-end;
   padding-right: 41px;
   position: relative;
-  bottom: 20px;
+  bottom: 30px;
 }
 .delete {
   border-style: none;
-  background: white;
+  background-color: white;
 }
 .delete:hover {
   fill: #e96190;
@@ -264,10 +260,57 @@ export default {
 .num {
   color: #607586;
   position: relative;
-  left: 40px;
+  left: 20px;
+  bottom: 0px;
+  font-size: 14px;
+}
+.num2 {
+  color: #607586;
+  position: relative;
+  top: 8px;
+  right: 110px;
+  font-size: 13px;
 }
 .icon3 {
   position: relative;
   left: 4px;
+}
+.comments {
+  margin-left: 84px;
+  margin-bottom: 12px;
+  color: #2398e0;
+}
+.arrow-svg {
+  width: 23px;
+  height: 23px;
+  fill: #1da1f2;
+}
+.arrow {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px;
+}
+.arrow:hover {
+  background-color: #e8f5fe;
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  background-color: white;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: #ebeef0;
+  min-height: 53px;
+}
+.header-title {
+  padding-left: 20px;
+  font-weight: bolder;
+  color: #0f1419;
+  font-size: 20px;
 }
 </style>

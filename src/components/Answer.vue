@@ -11,7 +11,7 @@
         </svg>
       </div>
       <input
-        @click="$emit('addComment', commentText, index)"
+        @click="$emit('addComment', commentText), (commentText = '')"
         class="tweet-btn"
         type="submit"
         value="Responder"
@@ -192,7 +192,7 @@ svg {
 }
 textarea {
   height: 100px;
-  margin-top: 15px;
+  margin-top: 20px;
   outline: none;
   border-style: none;
   margin-left: 10px;
