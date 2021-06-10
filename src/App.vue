@@ -22,7 +22,7 @@
   </div>
 
   <div v-else :style="{ display: tweetsDisplay }" class="container">
-    <Sidebar :name="username" />
+    <Sidebar class="sidebar" :name="username" />
     <div class="feed">
       <Feed
         :style="{ display: publishDisplay }"
@@ -48,6 +48,8 @@
           :likesNum="tweet.likesNum"
           :color="tweet.likeColor"
           :watchingComments="watchingComments"
+          :commentsNum="tweet.commentsNum"
+          :watchingComment="watchingComments"
         />
       </div>
     </div>
@@ -206,6 +208,7 @@ export default {
               likes: childData.likes,
               likesNum: childData.likesNum,
               likeColor: childData.likeColor,
+              commentsNum: childData.commentsNum,
             });
           });
         });
@@ -214,7 +217,9 @@ export default {
 
     //function to delete Tweets
     delet(index) {
-      if (this.username == this.tweetsdb[index].username) {
+      if (this.watchingComments == true) {
+        alert("You can only delete tweets in the Feed");
+      } else if (this.username == this.tweetsdb[index].username) {
         this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
         var keys = []; //Every Firebase Object Key will be stored in here
         var ref = firebase.database().ref("/tweets"); //Look in the /tweets route in firebase
@@ -268,6 +273,7 @@ export default {
                 likes: childData.likes,
                 likesNum: childData.likesNum,
                 likeColor: childData.likeColor,
+                commentsNum: childData.commentsNum,
               });
             });
           });
@@ -430,6 +436,7 @@ export default {
               likes: childData.likes,
               likesNum: childData.likesNum,
               likeColor: childData.likeColor,
+              commentsNum: childData.commentsNum,
             });
           });
         });
@@ -491,6 +498,26 @@ export default {
         .database()
         .ref("/tweets/" + this.tempKey + "/commentsNum")
         .set(firebase.database.ServerValue.increment(+1));
+
+      this.tweetsdb = [];
+      var ref = firebase.database().ref("/tweets");
+      ref.once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          this.tweetsdb.unshift({
+            mainText: childData.mainText,
+            day: childData.day,
+            username: childData.username,
+            idT: childData.idT,
+            likes: childData.likes,
+            likesNum: childData.likesNum,
+            likeColor: childData.likeColor,
+            commentsNum: childData.commentsNum,
+          });
+        });
+      });
+
       this.tweetsDisplay = "flex";
       this.answerDisplay = "none";
     },
@@ -532,6 +559,7 @@ export default {
             likes: childData.likes,
             likesNum: childData.likesNum,
             likeColor: childData.likeColor,
+            commentsNum: childData.commentsNum,
           });
         });
       });

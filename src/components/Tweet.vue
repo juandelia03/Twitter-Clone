@@ -21,7 +21,7 @@
           </g>
         </svg>
       </div>
-      <span class="num2">1</span>
+      <span class="num2">{{ commentsNum }}</span>
       <div class="circle2">
         <svg viewBox="0 0 24 24" width="19px" height="19px" aria-hidden="true">
           <g>
@@ -96,6 +96,8 @@ export default {
     likes: String,
     likesNum: Number,
     color: String,
+    commentsNum: String,
+    watchingComment: Boolean,
   },
   data() {
     return {};
@@ -224,8 +226,8 @@ export default {
   fill: #e75d8b;
   cursor: pointer;
 }
-.circle3:hover + .num {
-  color: #e75d8b;
+.circle3:hover .num {
+  color: blue;
 }
 .circle4 {
   display: flex;
@@ -264,6 +266,7 @@ export default {
   bottom: 0px;
   font-size: 14px;
 }
+
 .num2 {
   color: #607586;
   position: relative;
