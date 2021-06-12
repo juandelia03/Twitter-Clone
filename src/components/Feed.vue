@@ -22,11 +22,7 @@
       @submit="clear"
     >
       <div class="top">
-        <img
-          class="img"
-          src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
-          alt=""
-        />
+        <img class="img" :src="picUrl" alt="" />
         <input
           v-model="text"
           type="text"
@@ -42,18 +38,45 @@
 </template>
 
 <script>
+import firebase from "firebase";
 export default {
   name: "Feed",
+  props: {
+    name: String,
+  },
   data() {
     return {
       img: "../assets/foto.png",
       text: "",
+      picUrl: "",
     };
   },
   methods: {
     clear() {
       this.text = "";
     },
+  },
+  mounted() {
+    firebase
+      .database()
+      .ref("/users/" + this.name)
+      .once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childData = childSnapshot.val();
+          this.picUrl = childData;
+        });
+      });
+  },
+  updated() {
+    firebase
+      .database()
+      .ref("/users/" + this.name)
+      .once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childData = childSnapshot.val();
+          this.picUrl = childData;
+        });
+      });
   },
 };
 </script>
@@ -152,5 +175,20 @@ export default {
   border-radius: 25px;
   padding-left: 1px;
   padding-top: 1px;
+}
+@media screen and (max-width: 1430px) {
+  .feed {
+    display: flex;
+    border-style: solid;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    border-width: 1px;
+    border-color: #ebeef0;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 </style>
