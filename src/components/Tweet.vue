@@ -154,6 +154,8 @@ export default {
   font-size: 15px;
 }
 .time {
+  display: flex;
+  justify-self: flex-end;
   padding-top: 10px;
   padding-left: 190px;
   color: #5b7183;
@@ -415,7 +417,6 @@ export default {
     font-size: 15px;
     color: #5b7183;
     font-weight: 20px;
-    min-width: 150px;
   }
   .img {
     width: 48px;
