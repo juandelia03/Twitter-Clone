@@ -200,4 +200,12 @@ textarea {
   width: 88%;
   resize: none;
 }
+@media screen and (max-width: 650px) {
+  .main {
+    width: 100%;
+  }
+  .header {
+    width: 100%;
+  }
+}
 </style>
