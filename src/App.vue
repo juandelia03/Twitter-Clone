@@ -148,9 +148,7 @@ export default {
           " " +
           today.getHours() +
           ":" +
-          String(today.getMinutes()).padStart(2, "0") +
-          ":" +
-          String(today.getSeconds()).padStart(2, "0");
+          String(today.getMinutes()).padStart(2, "0");
 
         this.day = time;
         // If no user is given give a default

@@ -1,9 +1,15 @@
 <template>
   <div class="tweet">
     <img @click="pic" class="img" :src="url" />
-    <p class="user">{{ user }}</p>
-    <p class="arroba">@{{ user }}</p>
-    <p class="time">{{ time }}</p>
+    <div class="flexing">
+      <div style="display:flex;">
+        <p class="user">{{ user }}</p>
+        <p class="arroba">@{{ user }}</p>
+      </div>
+      <div>
+        <p class="time">{{ time }}</p>
+      </div>
+    </div>
 
     <p @click="$emit('commentsView')" class="text">{{ text }}</p>
 
@@ -157,8 +163,8 @@ export default {
   display: flex;
   justify-self: flex-end;
   padding-top: 10px;
-  padding-left: 190px;
   color: #5b7183;
+  margin-right: 10px;
 }
 .text {
   display: flex;
@@ -177,7 +183,6 @@ export default {
   font-size: 15px;
   color: #5b7183;
   font-weight: 200px;
-  min-width: 150px;
 }
 .img {
   width: 48px;
@@ -336,6 +341,11 @@ export default {
   color: #0f1419;
   font-size: 20px;
 }
+.flexing {
+  display: flex;
+  width: 540px;
+  justify-content: space-between;
+}
 @media screen and (max-width: 850px) {
   .tweet {
     display: flex;
@@ -357,6 +367,11 @@ export default {
 @media screen and (max-width: 599px) {
   .time {
     display: none;
+  }
+  .flexing {
+    display: flex;
+    width: auto;
+    justify-content: space-between;
   }
 }
 @media screen and (max-width: 544px) {
