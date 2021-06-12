@@ -162,8 +162,7 @@ input {
   position: relative;
   bottom: 0px;
 }
-
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1250px) {
   .view {
     display: none;
   }

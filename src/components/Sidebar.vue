@@ -103,11 +103,41 @@
       <div class="tweet-btn">
         <span>Tweet</span>
       </div>
-      <div class="user-data">
-        <img
-          class="img"
-          src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
-        />
+
+      <div class="user-data-view" v-if="opened === true">
+        <div class="section-1">
+          <img class="img" :src="picUrl" />
+          <div class="user-username">
+            <span class="name">{{ name }}</span>
+            <span class="user-name">@{{ name }}</span>
+          </div>
+          <div class="tick-container">
+            <svg class="tick" viewBox="0 0 24 24" aria-hidden="true">
+              <g>
+                <path
+                  d="M9 20c-.264 0-.52-.104-.707-.293l-4.785-4.785c-.39-.39-.39-1.023 0-1.414s1.023-.39 1.414 0l3.946 3.945L18.075 4.41c.32-.45.94-.558 1.395-.24.45.318.56.942.24 1.394L9.817 19.577c-.17.24-.438.395-.732.42-.028.002-.057.003-.085.003z"
+                ></path>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div @click="changeView" class="section-2">
+          <span class="chng">Change my profile picture</span>
+        </div>
+        <div @click="$emit('logOut')" class="section-3">
+          <span class="out">Log out</span>
+        </div>
+      </div>
+      <div class="user-pic-view" v-if="changePic === true">
+        <form @submit.prevent="newPic">
+          <span class="pic-text">Enter the url of your new picture</span>
+          <input class="input" type="text" v-model="url" />
+          <input class="input2" value="Change" type="submit" />
+        </form>
+      </div>
+      <div class="user-data" @click="open">
+        <img class="img" :src="picUrl" />
+
         <div class="user">
           <span class="name">{{ name }}</span>
 
@@ -120,10 +150,88 @@
 </template>
 
 <script>
+import firebase from "firebase";
 export default {
   name: "Sidebar",
   props: {
     name: String,
+  },
+  data() {
+    return {
+      opened: false,
+      changePic: false,
+      url: "",
+      picUrl: "",
+    };
+  },
+  methods: {
+    open() {
+      if (this.changePic === true) {
+        this.changePic = false;
+        this.opened = true;
+      } else if (this.opened === false) {
+        this.opened = true;
+        console.log(this.opened);
+      } else {
+        this.opened = false;
+        console.log(this.opened);
+      }
+    },
+    newProfilePic() {
+      firebase
+        .database()
+        .ref("/users/" + this.user)
+        .once("value", (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            var childData = childSnapshot.val();
+            this.picUrl = childData;
+          });
+        });
+    },
+
+    changeView() {
+      this.opened = false;
+      this.changePic = true;
+    },
+    newPic() {
+      if (this.url.includes("https://" && ".com")) {
+        firebase
+          .database()
+          .ref("/users/" + this.name + "/profilePic")
+          .set(this.url);
+      } else {
+        firebase
+          .database()
+          .ref("/users/" + this.name + "/profilePic")
+          .set(
+            "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
+          );
+      }
+      this.picUrl = this.url;
+      this.url = "";
+    },
+  },
+  mounted() {
+    firebase
+      .database()
+      .ref("/users/" + this.name)
+      .once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childData = childSnapshot.val();
+          this.picUrl = childData;
+        });
+      });
+  },
+  updated() {
+    firebase
+      .database()
+      .ref("/users/" + this.name)
+      .once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          var childData = childSnapshot.val();
+          this.picUrl = childData;
+        });
+      });
   },
 };
 </script>
@@ -233,6 +341,121 @@ export default {
 .user-data:hover {
   border-radius: 40px;
   background: #e8f5fe;
+}
+.user-data-view {
+  display: flex;
+  height: 200px;
+  width: 290px;
+  background-color: white;
+  box-shadow: rgba(0.1, 0.1, 0.1, 0.1) 0px 5px 15px;
+  position: absolute;
+  border-radius: 25px;
+  bottom: 180px;
+  flex-direction: column;
+}
+.user-pic-view {
+  display: flex;
+  height: 200px;
+  width: 290px;
+  background-color: white;
+  box-shadow: rgba(0.1, 0.1, 0.1, 0.1) 0px 5px 15px;
+  position: absolute;
+  border-radius: 25px;
+  bottom: 180px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-username {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 12px;
+}
+.tick-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+}
+.tick {
+  display: flex;
+  flex-direction: row;
+  width: 19px;
+  height: 19px;
+  fill: #2398e0;
+  align-self: flex-end;
+  margin-right: 12px;
+}
+.section-1 {
+  display: flex;
+  flex-direction: row;
+  height: 73px;
+  align-items: center;
+  width: 100%;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: #ebeef0;
+  cursor: auto;
+}
+.section-2 {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: #ebeef0;
+  cursor: pointer;
+}
+.section-2:hover {
+  background-color: #f7f7f7;
+}
+.chng {
+  margin-left: 12px;
+}
+.section-3 {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 52px;
+}
+.section-3:hover {
+  background-color: #f7f7f7;
+}
+.out {
+  margin-left: 12px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80px;
+  width: 70%;
+}
+.input {
+  border: 1px solid lightgray;
+  outline: none;
+  border-radius: 5px;
+  height: 20px;
+}
+.input2 {
+  display: flex;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  outline: inherit;
+  border-radius: 25px;
+  height: 28px;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bolder;
+  align-items: center;
+}
+.pic-text {
+  font-size: 12px;
+  color: rgb(87, 87, 87);
 }
 @media screen and (max-width: 850px) {
   .view {

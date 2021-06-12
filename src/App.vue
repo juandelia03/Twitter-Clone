@@ -22,9 +22,10 @@
   </div>
 
   <div v-else :style="{ display: tweetsDisplay }" class="container">
-    <Sidebar class="sidebar" :name="username" />
+    <Sidebar @logOut="logOut" class="sidebar" :name="username" />
     <div class="feed">
       <Feed
+        :name="username"
         :style="{ display: publishDisplay }"
         class="tweet-form"
         @submited="newTweet"
@@ -120,6 +121,14 @@ export default {
     };
   },
   methods: {
+    logOut() {
+      this.email = "";
+      this.username = "";
+      this.password = "";
+      this.display2 = "none";
+      this.display = "flex";
+      console.log("god");
+    },
     //Function to create Tweets
     newTweet(text, index) {
       //Check if there is any text to tweet
@@ -218,7 +227,7 @@ export default {
     //function to delete Tweets
     delet(index) {
       if (this.watchingComments == true) {
-        alert("You can only delete tweets in the Feed");
+        alert("You can only delete tweets in the Feed ");
       } else if (this.username == this.tweetsdb[index].username) {
         this.tweetsdb.splice([index], 1); //remove the tweet selected by index from the displayed twwets
         var keys = []; //Every Firebase Object Key will be stored in here
@@ -411,6 +420,14 @@ export default {
           var user = userCredential.user;
           this.display2 = "flex";
           this.display3 = "none";
+          firebase
+            .database()
+            .ref("/users/")
+            .child(Registerdata.email.replace("@gmail.com", ""))
+            .child("profilePic")
+            .set(
+              "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
+            );
           // ...
         })
         .catch((error) => {
@@ -576,7 +593,6 @@ export default {
 .container {
   display: flex;
   justify-content: space-evenly;
-  align-items: stretch;
 }
 
 .tweet-form {
