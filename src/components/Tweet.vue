@@ -334,4 +334,61 @@ export default {
   color: #0f1419;
   font-size: 20px;
 }
+@media screen and (max-width: 850px) {
+  .tweet {
+    display: flex;
+    flex-direction: row;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ebeef0;
+    border-right: 0px;
+    border-left: 0px;
+    border-top: 0px;
+    flex-wrap: wrap;
+    margin-bottom: 0px;
+    justify-content: flex-start;
+    background-color: white;
+    width: 100%;
+    max-width: 1000px;
+  }
+}
+@media screen and (max-width: 599px) {
+  .time {
+    display: none;
+  }
+}
+@media screen and (max-width: 544px) {
+  .text {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 128px;
+    align-self: center;
+    position: relative;
+    bottom: 22px;
+    min-width: 400px;
+    max-width: 401px;
+    min-height: 40px;
+  }
+  .user {
+    padding-top: 10px;
+
+    font-weight: bolder;
+    font-size: 15px;
+  }
+  .arroba {
+    padding-top: 10px;
+
+    font-size: 15px;
+    color: #5b7183;
+    font-weight: 20px;
+    min-width: 150px;
+  }
+  .img {
+    width: 48px;
+    height: 48px;
+    border-radius: 25px;
+    margin-left: 60px;
+    margin-top: 10px;
+  }
+}
 </style>

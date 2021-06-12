@@ -191,4 +191,28 @@ export default {
     flex-wrap: wrap;
   }
 }
+@media screen and (max-width: 850px) {
+  .feed {
+    display: flex;
+    border-style: solid;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    border-width: 1px;
+    border-color: #ebeef0;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 544px) {
+  .top {
+    padding-left: 60px;
+  }
+  h2 {
+    padding-left: 50px;
+  }
+}
 </style>
