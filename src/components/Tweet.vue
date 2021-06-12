@@ -391,4 +391,50 @@ export default {
     margin-top: 10px;
   }
 }
+@media screen and (max-width: 452px) {
+  .text {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 168px;
+    align-self: center;
+    position: relative;
+    bottom: 22px;
+    min-width: 400px;
+    max-width: 401px;
+    min-height: 40px;
+  }
+  .user {
+    padding-top: 10px;
+
+    font-weight: bolder;
+    font-size: 15px;
+  }
+  .arroba {
+    padding-top: 10px;
+
+    font-size: 15px;
+    color: #5b7183;
+    font-weight: 20px;
+    min-width: 150px;
+  }
+  .img {
+    width: 48px;
+    height: 48px;
+    border-radius: 25px;
+    margin-left: 100px;
+    margin-top: 10px;
+  }
+  .circle2 {
+    display: none;
+  }
+  .delete {
+    margin-left: 30px;
+  }
+  .circle1 {
+    margin-left: 30px;
+  }
+  .circle3 {
+    margin-left: 30px;
+  }
+}
 </style>

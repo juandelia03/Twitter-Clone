@@ -215,4 +215,12 @@ export default {
     padding-left: 50px;
   }
 }
+@media screen and (max-width: 544px) {
+  .top {
+    padding-left: 100px;
+  }
+  h2 {
+    padding-left: 90px;
+  }
+}
 </style>
