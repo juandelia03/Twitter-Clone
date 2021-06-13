@@ -265,7 +265,8 @@ export default {
           this.display = "none"; //get rid of the Login Page
           this.display2 = "flex"; //Acces the twitter page
           this.email = LoginData.email;
-          this.username = LoginData.email.replace("@gmail.com", ""); //Defining the username using the email Data
+          let data = LoginData.email.replace("@gmail.com", "");
+          this.username = data.replace(".", "_"); //Defining the username using the email Data
           //display the data stored in firebase once logged in
           var ref = firebase.database().ref("/tweets");
           ref.once("value", (snapshot) => {
@@ -418,10 +419,11 @@ export default {
           var user = userCredential.user;
           this.display2 = "flex";
           this.display3 = "none";
+          let data = Registerdata.email.replace(".", "_");
           firebase
             .database()
             .ref("/users/")
-            .child(Registerdata.email.replace("@gmail.com", ""))
+            .child(data.replace("@gmail.com", ""))
             .child("profilePic")
             .set(
               "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
