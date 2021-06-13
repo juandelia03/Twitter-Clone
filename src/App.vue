@@ -418,11 +418,10 @@ export default {
           var user = userCredential.user;
           this.display2 = "flex";
           this.display3 = "none";
-          let email = Registerdata.email.replace(".", "");
           firebase
             .database()
             .ref("/users/")
-            .child(email.replace("@gmail.com", ""))
+            .child(Registerdata.email.replace("@gmail.com", ""))
             .child("profilePic")
             .set(
               "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
