@@ -194,7 +194,7 @@ export default {
       this.changePic = true;
     },
     newPic() {
-      if (this.url.includes("https://" && ".com")) {
+      if (this.url.includes("https://")) {
         firebase
           .database()
           .ref("/users/" + this.name + "/profilePic")
