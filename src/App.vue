@@ -127,7 +127,7 @@ export default {
       this.password = "";
       this.display2 = "none";
       this.display = "flex";
-      console.log("god");
+      this.tweetsdb = [];
     },
     //Function to create Tweets
     newTweet(text, index) {
