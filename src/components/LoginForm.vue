@@ -27,7 +27,7 @@
           v-model="password"
           placeholder="Password"
           class="input"
-          type="text"
+          type="password"
         />
         <input type="submit" class="tweet-btn" value="Iniciar Sesión" />
       </form>
