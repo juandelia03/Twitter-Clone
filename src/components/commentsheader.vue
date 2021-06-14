@@ -60,4 +60,14 @@ export default {
   color: #0f1419;
   font-size: 20px;
 }
+@media screen and (max-width: 544px) {
+  .arrow {
+    padding-left: 40px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .arrow {
+    padding-left: 80px;
+  }
+}
 </style>
